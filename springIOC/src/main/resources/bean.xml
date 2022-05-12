@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean 标签：用于配置让 spring 创建对象，并且存入 ioc 容器之中
+        id：给对象在容器中提供一个唯一标识。用于获取对象。
+        class：指定类的全限定类名。用于反射创建对象。默认情况下调用无参构造函数。
+        scope：指定对象的作用范围。
+              * singleton :默认值，单例的.
+              * prototype :多例的
+        init-method：指定类中的初始化方法名称。
+       destroy-method：指定类中销毁方法名称。
+
+       实例化 Bean 的三种方式
+       1.第一种方式：使用默认无参构造函数
+       <bean id="accountService" class="cn.curleyg.wang.service.impl.AccountServiceImpl"/>
+
+       2.第二种方式：spring 管理静态工厂-使用静态工厂的方法创建对象
+       <bean id="accountService" class="cn.curleyg.wang.factory.StaticFactory" factory-method="createAccountService"></bean>
+
+       第三种方式：spring 管理实例工厂-使用实例工厂的方法创建对象
+       <bean id="instancFactory" class="cn.curleyg.wang.factory.InstanceFactory"></bean>
+       <bean id="accountService" factory-bean="instancFactory" factory-method="createAccountService"></bean>
+
+       依赖注入:
+             构造函数注入
+             set 方法注入
+             注解的方式
+             注入集合属性
+   -->
+    <!-- 配置 service -->
+    <!--    <bean id="accountService" class="cn.curleyg.wang.service.impl.AccountServiceImpl"/>-->
+
+    <!-- 配置 dao -->
+    <bean id="accountDao" class="cn.curleyg.wang.dao.impl.AccountDaoImpl"/>
+
+    <!--    <bean id="accountService" class="cn.curleyg.wang.factory.StaticFactory" factory-method="createAccountService"/>-->
+
+    <bean id="instancFactory" class="cn.curleyg.wang.factory.InstanceFactory"/>
+
+    <!--    <bean id="accountService" factory-bean="instancFactory" factory-method="createAccountService"/>-->
+
+    <!-- 使用构造函数的方式，给 service 中的属性传值
+        要求：类中需要提供一个对应参数列表的构造函数。
+        涉及的标签：constructor-arg
+        属性：
+        index:指定参数在构造函数参数列表的索引位置
+        type:指定参数在构造函数中的数据类型
+        name:指定参数在构造函数中的名称 用这个找给谁赋值
+   =======上面三个都是找给谁赋值，下面两个指的是赋什么值的==============
+        value:它能赋的值是基本数据类型和 String 类型
+        ref:它能赋的值是其他 bean 类型，也就是说，必须得是在配置文件中配置过的 bean
+   -->
+    <!--    <bean id="accountService" class="cn.curleyg.wang.service.impl.AccountServiceImpl">-->
+    <!--        <constructor-arg name="name" value="张三"/>-->
+    <!--        <constructor-arg name="age" value="18"/>-->
+    <!--        <constructor-arg name="birthday" ref="now"/>-->
+    <!--    </bean>-->
+    <!--    <bean id="now" class="java.util.Date"/>-->
+
+    <!-- 通过配置文件给 bean 中的属性传值：使用 set 方法的方式
+            涉及的标签：
+            property属性：
+            name：找的是类中 set 方法后面的部分
+            ref：给属性赋值是其他 bean 类型的
+            value：给属性赋值是基本数据类型和 string 类型的
+            实际开发中，此种方式用的较多。
+-->
+    <bean id="accountService" class="cn.curleyg.wang.service.impl.AccountServiceImpl">
+        <property name="name" value="test"/>
+        <property name="age" value="21"/>
+        <property name="birthday" ref="now"/>
+        <!-- 在注入集合数据时，只要结构相同，标签可以互换 -->
+        <!-- 给数组注入数据 -->
+        <property name="myStrs">
+            <set>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </set>
+        </property>
+        <!-- 注入 list 集合数据 -->
+        <property name="myList">
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+        <!-- 注入 set 集合数据 -->
+        <property name="mySet">
+            <list>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </list>
+        </property>
+        <!-- 注入 Map 数据 -->
+        <property name="myMap">
+            <props>
+                <prop key="testA">aaa</prop>
+                <prop key="testB">bbb</prop>
+            </props>
+        </property>
+        <property name="myProps">
+            <map>
+                <entry key="testA" value="aaa"/>
+                <entry key="testB" value="bbb"/>
+            </map>
+        </property>
+        <!-- 注入 properties 数据 -->
+    </bean>
+    <bean id="now" class="java.util.Date"/>
+</beans>
